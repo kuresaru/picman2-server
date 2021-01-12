@@ -1,0 +1,54 @@
+server:
+  port: 8088
+  use-forward-headers: true
+  tomcat:
+    remote-ip-header: X-Real-IP
+    protocol-header: X-Forward-Proto
+    max-threads: 32
+    min-spare-threads: 2
+  servlet:
+    session:
+      cookie:
+        name: PMST
+
+spring:
+  application:
+    name: picman2
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${DBH:localhost/picman}?useSSL=false&serverTimezone=UTC&characterEncoding=utf-8
+    username: ${DBU:root}
+    password: ${DBP:123456}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  servlet:
+    multipart:
+      max-file-size: 30MB
+
+security:
+  oauth2:
+    client:
+      client-id: picman2
+      client-secret: abcdef123456
+      access-token-uri: http://localhost:7011/oauth/token
+      user-authorization-uri: http://localhost:7011/oauth/authorize
+    resource:
+      user-info-uri: http://localhost:7011/api/userinfo
+    sso:
+      login-path: /login
+
+logging:
+  path: logs
+  file:
+    max-history: 30
+
+picman:
+  storage:
+    base-path: D:/picman-data
+  jwt:
+    sign-key: E5SZZimwes82P3AshaTKM/pQXTk7GIBTwxnb8M7mQ3ScfM44hFMyg7GNP2bQPH06x0fMX9j7C7QuHKGXvVmpbg==
+  swagger:
+    enable: ${SWAGGER:false}
