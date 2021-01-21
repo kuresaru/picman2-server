@@ -1,7 +1,8 @@
 package top.scraft.picmanserver.dao;
 
 import lombok.Data;
-import org.apache.catalina.startup.SetNextNamingRule;
+import top.scraft.picmanserver.data.PictureLibraryDetails;
+import top.scraft.picmanserver.data.SacUserPrincipal;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -54,6 +55,16 @@ public class PictureLibrary {
 
     public void markUpdate() {
         lastUpdate = System.currentTimeMillis() / 1000;
+    }
+
+    public PictureLibraryDetails details(PictureDao pictureDao, SacUserPrincipal principal) {
+        PictureLibraryDetails details = new PictureLibraryDetails();
+        details.setLid(getLid());
+        details.setName(getName());
+        details.setPicCount((int) pictureDao.countByLibraries_Lid(getLid()));
+        details.setLastUpdate(getLastUpdate());
+        details.setReadonly(!getOwner().equals(principal.getSaid())); // 暂时设置只有创建者能修改内容
+        return details;
     }
 
     public static PictureLibrary create(String name, Long owner, int maxPictureCount) {

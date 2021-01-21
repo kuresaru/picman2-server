@@ -6,6 +6,7 @@ import top.scraft.picmanserver.rest.result.api.PiclibResult;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Deprecated
 public class PiclibResultWrapper<T> extends PiclibResult {
 
     private T data;

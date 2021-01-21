@@ -34,7 +34,7 @@ security:
       client-id: picman2
       client-secret: abcdef123456
       access-token-uri: http://localhost:7011/oauth/token
-      user-authorization-uri: http://localhost:7011/oauth/authorize
+      user-authorization-uri: http://10.11.7.3:7011/oauth/authorize
     resource:
       user-info-uri: http://localhost:7011/api/userinfo
     sso:
@@ -47,7 +47,7 @@ logging:
 
 picman:
   storage:
-    base-path: D:/picman-data
+    base-path: ./testdata
   jwt:
     sign-key: E5SZZimwes82P3AshaTKM/pQXTk7GIBTwxnb8M7mQ3ScfM44hFMyg7GNP2bQPH06x0fMX9j7C7QuHKGXvVmpbg==
   swagger:

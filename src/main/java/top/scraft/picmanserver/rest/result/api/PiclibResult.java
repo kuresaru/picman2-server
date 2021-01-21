@@ -6,6 +6,7 @@ import top.scraft.picmanserver.rest.result.RootResult;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Deprecated
 public class PiclibResult extends RootResult {
 
     private long lid;

@@ -6,11 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.scraft.picmanserver.rest.result.Result;
 import top.scraft.picmanserver.utils.Utils;
 import top.scraft.picmanserver.data.PictureDetails;
 import top.scraft.picmanserver.log.ApiLog;
-import top.scraft.picmanserver.rest.result.RootResult;
-import top.scraft.picmanserver.rest.result.api.piclib.picture.PictureResultWrapper;
 import top.scraft.picmanserver.service.PictureService;
 
 import javax.annotation.Resource;
@@ -23,23 +22,18 @@ public class ApiPicture {
     private PictureService pictureService;
 
     @ApiLog
-    @GetMapping("/{pid}/details")
+    @GetMapping("/{pid}")
     @ApiOperation("/取图片信息")
-    public ResponseEntity<PictureResultWrapper<PictureDetails>>
+    public ResponseEntity<Result<PictureDetails>>
     getPictureDetails(@PathVariable String pid) {
-        PictureResultWrapper<PictureDetails> result = new PictureResultWrapper<>();
-        result.setPid(pid);
         if (Utils.isPidInvalid(pid)) {
-            result.status(400, RootResult.ERROR_INVALID_PID);
-            return ResponseEntity.badRequest().body(result);
+            return Result.forbidden();
         }
         PictureDetails details = pictureService.getDetails(pid);
         if (details == null) {
-            return ResponseEntity.notFound().build();
+            return Result.notFound();
         }
-        result.setData(details);
-        result.ok();
-        return ResponseEntity.ok(result);
+        return Result.ok(details);
     }
 
 }

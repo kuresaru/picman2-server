@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import top.scraft.picmanserver.data.SacUserPrincipal;
 import top.scraft.picmanserver.log.ApiLog;
-import top.scraft.picmanserver.rest.result.api.ResultWrapper;
+import top.scraft.picmanserver.rest.result.Result;
 import top.scraft.picmanserver.rest.result.api.ServerInfo;
 import top.scraft.picmanserver.rest.result.api.UserDetail;
 
@@ -22,22 +22,22 @@ public class Api {
     @ApiLog
     @GetMapping("/")
     @ApiOperation("取服务器信息")
-    public ResponseEntity<ResultWrapper<ServerInfo>>
+    public ResponseEntity<Result<ServerInfo>>
     getServerInfo() {
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setApiVersion(1);
-        return ResponseEntity.ok(new ResultWrapper<>(serverInfo));
+        return Result.ok(serverInfo);
     }
 
     @ApiLog
     @GetMapping("/my")
     @ApiOperation("取已登录用户信息")
-    public ResponseEntity<ResultWrapper<UserDetail>>
+    public ResponseEntity<Result<UserDetail>>
     getUserInfo(@ApiIgnore @AuthenticationPrincipal SacUserPrincipal principal) {
         UserDetail userDetail = new UserDetail();
         userDetail.setSacUserPrincipal(principal);
         userDetail.setAdmin(true); // TODO
-        return ResponseEntity.ok(new ResultWrapper<>(userDetail));
+        return Result.ok(userDetail);
     }
 
 }

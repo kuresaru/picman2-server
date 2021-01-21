@@ -50,9 +50,6 @@ public class PictureServiceImpl implements PictureService {
         result.setCreateTime(picture.getCreateTime());
         result.setLastModify(picture.getLastModify());
         result.setValid(picture.isValid());
-        Set<Long> libs = new HashSet<>();
-        picture.getLibraries().forEach(l -> libs.add(l.getLid()));
-        result.setLibs(libs);
         return result;
     }
 

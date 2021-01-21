@@ -15,6 +15,5 @@ public class PictureDetails {
     private long createTime;
     private long lastModify;
     private boolean valid;
-    private Set<Long> libs;
 
 }
