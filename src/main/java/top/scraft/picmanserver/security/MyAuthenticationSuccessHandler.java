@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 import top.scraft.picmanserver.data.SacUserPrincipal;
-import top.scraft.picmanserver.rest.result.RootResult;
+import top.scraft.picmanserver.data.RootResult;
 import top.scraft.picmanserver.service.UserService;
 
 import javax.annotation.PostConstruct;

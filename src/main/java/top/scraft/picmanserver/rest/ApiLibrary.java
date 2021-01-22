@@ -18,9 +18,7 @@ import top.scraft.picmanserver.dao.PictureLibrary;
 import top.scraft.picmanserver.dao.PictureLibraryDao;
 import top.scraft.picmanserver.data.*;
 import top.scraft.picmanserver.log.ApiLog;
-import top.scraft.picmanserver.rest.result.Result;
-import top.scraft.picmanserver.rest.result.api.piclib.PiclibResultWrapper;
-import top.scraft.picmanserver.rest.result.api.piclib.picture.PictureUpdateResult;
+import top.scraft.picmanserver.data.Result;
 import top.scraft.picmanserver.service.PictureLibraryService;
 import top.scraft.picmanserver.service.PictureService;
 import top.scraft.picmanserver.service.UserService;
@@ -77,17 +75,14 @@ public class ApiLibrary {
     @ApiLog
     @ApiOperation("取图库信息")
     @GetMapping("/{lid}")
-    public ResponseEntity<PiclibResultWrapper<PictureLibraryDetails>>
+    public ResponseEntity<Result<PictureLibraryDetails>>
     getPictureLibraryDetails(@ApiIgnore @AuthenticationPrincipal SacUserPrincipal principal,
                              @ApiParam @PathVariable long lid) {
         if (!pictureLibraryService.access(lid, principal.getSaid())) {
             return ResponseEntity.notFound().build();
         }
-        PiclibResultWrapper<PictureLibraryDetails> result = new PiclibResultWrapper<>();
         PictureLibrary library = pictureLibraryDao.findByLidAndDeletedFalse(lid).orElseThrow();
-        result.setData(library.details(pictureDao, principal));
-        result.ok();
-        return ResponseEntity.ok(result);
+        return Result.ok(library.details(pictureDao, principal));
     }
 
     @ApiLog
@@ -126,7 +121,7 @@ public class ApiLibrary {
     @ApiLog
     @ApiOperation("新建或更新图片信息")
     @PutMapping("/{lid}/gallery/{pid}")
-    public ResponseEntity<Result<PictureUpdateResult>>
+    public ResponseEntity<Result<PictureDetails>>
     updatePictureMeta(@ApiIgnore @AuthenticationPrincipal SacUserPrincipal principal,
                   @ApiParam @PathVariable long lid,
                   @ApiParam @PathVariable String pid,
@@ -147,9 +142,7 @@ public class ApiLibrary {
         } catch (PictureLibraryFullException e) {
             return Result.forbidden(e.getMessage());
         }
-        PictureUpdateResult result = new PictureUpdateResult();
-        result.setNeedUpload(!picture.isValid());
-        return Result.ok(result);
+        return Result.ok(pictureService.getDetails(picture.getPid()));
     }
 
     @ApiLog

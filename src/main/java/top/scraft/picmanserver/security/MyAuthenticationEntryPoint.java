@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import top.scraft.picmanserver.rest.result.RootResult;
+import top.scraft.picmanserver.data.RootResult;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;

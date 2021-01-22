@@ -1,4 +1,4 @@
-package top.scraft.picmanserver.rest.result.api;
+package top.scraft.picmanserver.data;
 
 import lombok.Data;
 import top.scraft.picmanserver.data.SacUserPrincipal;

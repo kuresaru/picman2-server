@@ -5,7 +5,7 @@
  * Date: 2020/12/17
  */
 
-package top.scraft.picmanserver.rest.result.api;
+package top.scraft.picmanserver.data;
 
 import lombok.Data;
 

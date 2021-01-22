@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import top.scraft.picmanserver.data.SacUserPrincipal;
 import top.scraft.picmanserver.log.ApiLog;
-import top.scraft.picmanserver.rest.result.Result;
-import top.scraft.picmanserver.rest.result.api.ServerInfo;
-import top.scraft.picmanserver.rest.result.api.UserDetail;
+import top.scraft.picmanserver.data.Result;
+import top.scraft.picmanserver.data.ServerInfo;
+import top.scraft.picmanserver.data.UserDetail;
 
 @RestController
 @RequestMapping("/api")

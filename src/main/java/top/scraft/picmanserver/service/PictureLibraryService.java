@@ -28,6 +28,7 @@ public interface PictureLibraryService {
      * 新建图库
      *
      * @param name 图库名
+     * @param owner 所有者said
      * @return 新图库
      */
     PictureLibrary create(String name, Long owner);

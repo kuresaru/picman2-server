@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.scraft.picmanserver.rest.result.Result;
+import top.scraft.picmanserver.data.Result;
 import top.scraft.picmanserver.utils.Utils;
 import top.scraft.picmanserver.data.PictureDetails;
 import top.scraft.picmanserver.log.ApiLog;

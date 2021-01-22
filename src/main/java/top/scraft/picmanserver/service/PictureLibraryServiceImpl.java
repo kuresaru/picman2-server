@@ -60,26 +60,40 @@ public class PictureLibraryServiceImpl implements PictureLibraryService {
     @Override
     @Transactional
     public Picture addOrUpdatePicture(long lid, String pid, UpdatePictureRequest request, Long operator) throws PictureLibraryFullException {
-        Optional<Picture> pictureOptional = pictureDao.findById(pid);
         PictureLibrary library = pictureLibraryDao.findByLidAndDeletedFalse(lid).orElseThrow(() -> new IllegalArgumentException("Library not found: " + lid));
-        if (pictureOptional.isEmpty() && (!(library.getPictures().size() < library.getMaxPictureCount()))) {
+        boolean libraryContains = pictureDao.existsByPidAndLibraries_Lid(pid, lid);
+        // 检查图库是否满
+        if ((!libraryContains) && pictureDao.countByLibraries_Lid(lid) >= library.getMaxPictureCount()) {
             throw new PictureLibraryFullException();
         }
-        Picture picture = pictureOptional.orElseGet(() -> {
-            Picture p = new Picture();
+        // 更新图片
+        Optional<Picture> pictureOptional = pictureDao.findById(pid);
+        Picture p;
+        if (pictureOptional.isEmpty()) {
+            // 不存在 创建新图片
+            p = new Picture();
             p.setPid(pid);
             p.setCreateTime(System.currentTimeMillis() / 1000);
             p.setCreator(operator);
-            return p;
-        });
-        picture.setDescription(request.getDescription());
-        picture.setTags(request.getTags());
-        picture.setLastModify(System.currentTimeMillis() / 1000);
-        picture = pictureDao.save(picture);
-        library.getPictures().add(picture);
+            p.setDescription(request.getDescription());
+            p.setTags(request.getTags());
+            p.setLastModify(System.currentTimeMillis() / 1000);
+            p = pictureDao.save(p);
+        } else {
+            // 图片已存在
+            p = pictureOptional.get();
+            if (p.getCreator().equals(operator)) {
+                p.setDescription(request.getDescription());
+                p.setTags(request.getTags());
+                p.setLastModify(System.currentTimeMillis() / 1000);
+                p = pictureDao.save(p);
+            }
+            // 非创建者直接引用保存
+        }
+        library.getPictures().add(p);
         library.markUpdate();
         pictureLibraryDao.save(library);
-        return picture;
+        return p;
     }
 
 }

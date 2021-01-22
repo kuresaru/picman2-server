@@ -1,4 +1,4 @@
-package top.scraft.picmanserver.rest.result;
+package top.scraft.picmanserver.data;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
