@@ -10,6 +10,7 @@ server:
     session:
       cookie:
         name: PMST
+    timeout: P30DT0H0M0S
 
 spring:
   application:
@@ -49,6 +50,6 @@ picman:
   storage:
     base-path: ./testdata
   jwt:
-    sign-key: E5SZZimwes82P3AshaTKM/pQXTk7GIBTwxnb8M7mQ3ScfM44hFMyg7GNP2bQPH06x0fMX9j7C7QuHKGXvVmpbg==
+    sign-key: changeme
   swagger:
     enable: ${SWAGGER:false}
