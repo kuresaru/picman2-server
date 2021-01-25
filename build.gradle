@@ -56,3 +56,8 @@ dependencyManagement {
 test {
 	useJUnitPlatform()
 }
+
+task docker(type: Exec) { task ->
+	workingDir "."
+	commandLine "docker", "build", "-t", "kuresaru/${project.name}:${project.version}", "."
+}
