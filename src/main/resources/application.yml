@@ -17,9 +17,9 @@ spring:
     name: picman2
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://${DBH:localhost/picman}?useSSL=false&serverTimezone=UTC&characterEncoding=utf-8
-    username: ${DBU:root}
-    password: ${DBP:123456}
+    url: jdbc:mysql://localhost/picman?useSSL=false&serverTimezone=UTC&characterEncoding=utf-8  # change host and database
+    username: root  # change username
+    password: 123456  # change password
   jpa:
     show-sql: true
     hibernate:
@@ -34,12 +34,10 @@ security:
     client:
       client-id: picman2
       client-secret: abcdef123456
-      access-token-uri: http://localhost:7011/oauth/token
-      user-authorization-uri: http://10.11.7.3:7011/oauth/authorize
+      access-token-uri: http://localhost:7011/oauth/token  # change sac private address
+      user-authorization-uri: http://10.11.7.3:7011/oauth/authorize  # change sac public address
     resource:
-      user-info-uri: http://localhost:7011/api/userinfo
-    sso:
-      login-path: /login
+      user-info-uri: http://localhost:7011/api/userinfo  # change sac private address
 
 logging:
   path: logs
@@ -50,6 +48,7 @@ picman:
   storage:
     base-path: ./testdata
   jwt:
-    sign-key: changeme
+    sign-key: changeme  # for test, no effects
   swagger:
-    enable: ${SWAGGER:false}
+    enable: true  # change
+  rgw-access-key: 123456  # change

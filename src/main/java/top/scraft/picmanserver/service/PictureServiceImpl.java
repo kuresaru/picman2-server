@@ -35,22 +35,26 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     @Nullable
+    @Deprecated
     public PictureDetails getDetails(String pid) {
         Optional<Picture> pictureOptional = pictureDao.findById(pid);
         if (pictureOptional.isEmpty()) {
             return null;
         }
         Picture picture = pictureOptional.get();
-        PictureDetails result = new PictureDetails();
-        result.setDescription(picture.getDescription());
-        result.setTags(picture.getTags());
-        result.setFileSize(picture.getFileSize());
-        result.setWidth(picture.getWidth());
-        result.setHeight(picture.getHeight());
-        result.setCreateTime(picture.getCreateTime());
-        result.setLastModify(picture.getLastModify());
-        result.setValid(picture.isValid());
-        return result;
+        return PictureDetails.fromPicture(picture);
+    }
+
+    @Override
+    @Nullable
+    public PictureDetails getDetails(String pid, long lid) {
+        // 留着做不同图库不同信息的功能 顺便检查图片是否存在于图库
+        Optional<Picture> pictureOptional = pictureDao.findByPidAndLibraries_Lid(pid, lid);
+        if (pictureOptional.isEmpty()) {
+            return null;
+        }
+        Picture picture = pictureOptional.get();
+        return PictureDetails.fromPicture(picture);
     }
 
     @Override

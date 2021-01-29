@@ -4,11 +4,11 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -16,10 +16,10 @@ import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import top.scraft.picmanserver.data.SacUserPrincipal;
 import top.scraft.picmanserver.security.MyAuthenticationEntryPoint;
-import top.scraft.picmanserver.security.MyAuthenticationSuccessHandler;
+import top.scraft.picmanserver.security.RgwAuthenticationFilter;
 
 import javax.annotation.Resource;
-import javax.servlet.*;
+import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -30,13 +30,14 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private MyAuthenticationEntryPoint authenticationEntryPoint;
-//    @Resource
-//    private MyAuthenticationSuccessHandler authenticationSuccessHandler;
+    @Resource
+    private RgwAuthenticationFilter rgwAuthenticationFilter;
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/api/").permitAll()
+                .antMatchers("/rgwauth").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().disable()
@@ -45,6 +46,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
+                .addFilterAfter(rgwAuthenticationFilter, AbstractPreAuthenticatedProcessingFilter.class)
                 .addFilterAfter(myLoginSuccessRedirectSetterFilter(), AbstractPreAuthenticatedProcessingFilter.class);
     }
 
@@ -86,6 +88,11 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }
 /*
 org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@790bd0e,
@@ -93,6 +100,8 @@ org.springframework.security.web.context.SecurityContextPersistenceFilter@23471b
 org.springframework.security.web.header.HeaderWriterFilter@7bd4f212,
 org.springframework.security.web.csrf.CsrfFilter@182ce25e,
 org.springframework.security.web.authentication.logout.LogoutFilter@5e05dd42,
+top.scraft.picmanserver.security.RgwAuthenticationFilter@5a85f41b,
+top.scraft.picmanserver.config.ResourceServerConfig$$Lambda$813/0x00000008007b1040@17d837ab,
 org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter@3cd6cab5,
 org.springframework.security.web.savedrequest.RequestCacheAwareFilter@68893394,
 org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@70bbc163,

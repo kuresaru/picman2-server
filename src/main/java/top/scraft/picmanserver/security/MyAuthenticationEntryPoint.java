@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import top.scraft.picmanserver.data.RootResult;
+import top.scraft.picmanserver.data.Result;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -28,10 +28,8 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         PrintWriter out = response.getWriter();
-        RootResult result = new RootResult();
-        result.status(401, "未登录");
-        String json = objectMapper.writeValueAsString(result);
-        out.print(json);
+        out.print(objectMapper.writeValueAsString(Result.status(HttpStatus.UNAUTHORIZED,
+                "未登录", null).getBody()));
         out.flush();
         out.close();
     }

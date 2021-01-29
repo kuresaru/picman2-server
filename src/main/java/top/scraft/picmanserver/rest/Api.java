@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
-import top.scraft.picmanserver.data.SacUserPrincipal;
-import top.scraft.picmanserver.log.ApiLog;
 import top.scraft.picmanserver.data.Result;
+import top.scraft.picmanserver.data.SacUserPrincipal;
 import top.scraft.picmanserver.data.ServerInfo;
 import top.scraft.picmanserver.data.UserDetail;
+import top.scraft.picmanserver.log.ApiLog;
 
 @RestController
 @RequestMapping("/api")
@@ -26,6 +26,7 @@ public class Api {
     getServerInfo() {
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setApiVersion(1);
+        serverInfo.setApiSubVersion(2);
         return Result.ok(serverInfo);
     }
 

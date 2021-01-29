@@ -13,5 +13,6 @@ import lombok.Data;
 public class ServerInfo {
 
     private int apiVersion;
+    private int apiSubVersion;
 
 }

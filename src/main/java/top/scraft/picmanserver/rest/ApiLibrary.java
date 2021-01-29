@@ -99,6 +99,18 @@ public class ApiLibrary {
     }
 
     @ApiLog
+    @ApiOperation("搜索图片(测试功能,限内部调用)")
+    @GetMapping("/_search")
+    public ResponseEntity<Result<List<PictureDetails>>>
+    searchPicture(@ApiIgnore @AuthenticationPrincipal SacUserPrincipal principal,
+                  @ApiParam @RequestParam String search) {
+        if (principal.getSaid() != SacUserPrincipal.SAID_RGW) {
+            return Result.forbidden();
+        }
+        return Result.ok(pictureLibraryService.searchForRgw(search));
+    }
+
+    @ApiLog
     @ApiOperation("取图库内容")
     @GetMapping("/{lid}/gallery")
     public ResponseEntity<Result<List<PictureLibraryContentDetails>>>
@@ -187,12 +199,18 @@ public class ApiLibrary {
                    @ApiIgnore WebRequest request,
                    @ApiParam @PathVariable long lid,
                    @ApiParam @PathVariable String pid) {
-        PictureDetails details = pictureService.getDetails(pid);
-        if ((details == null) || (!details.isValid()) || (!pictureService.isInLibrary(pid, lid))) {
-            return ResponseEntity.notFound().build();
-        }
-        if (!pictureLibraryService.access(lid, principal.getSaid())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (principal.getSaid() == SacUserPrincipal.SAID_RGW) {
+            if (!pictureDao.existsByPidAndValidTrue(pid)) {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            PictureDetails details = pictureService.getDetails(pid, lid);
+            if ((details == null) || (!details.isValid())) {
+                return ResponseEntity.notFound().build();
+            }
+            if (!pictureLibraryService.access(lid, principal.getSaid())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         }
         File file = pictureService.getPictureFile(pid);
         String eTag = "pmpic_" + pid;

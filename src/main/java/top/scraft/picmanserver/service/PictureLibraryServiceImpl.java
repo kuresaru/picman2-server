@@ -2,12 +2,15 @@ package top.scraft.picmanserver.service;
 
 import org.springframework.stereotype.Service;
 import top.scraft.picmanserver.dao.*;
+import top.scraft.picmanserver.data.PictureDetails;
 import top.scraft.picmanserver.data.PictureLibraryFullException;
 import top.scraft.picmanserver.data.UpdatePictureRequest;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +30,9 @@ public class PictureLibraryServiceImpl implements PictureLibraryService {
 
     @Override
     public boolean access(long lid, long said) {
+        if (said == -1) {
+            return pictureLibraryDao.existsByLidAndDeletedFalse(lid);
+        }
         return pictureLibraryDao.existsByLidAndUsers_SaidAndDeletedFalse(lid, said);
     }
 
@@ -94,6 +100,14 @@ public class PictureLibraryServiceImpl implements PictureLibraryService {
         library.markUpdate();
         pictureLibraryDao.save(library);
         return p;
+    }
+
+    @Override
+    public List<PictureDetails> searchForRgw(String keyword) {
+        List<PictureDetails> details = new ArrayList<>();
+        pictureDao.findByValidTrueAndDescriptionOrTagsContaining(keyword)
+                .forEach(p -> details.add(PictureDetails.fromPicture(p)));
+        return details;
     }
 
 }

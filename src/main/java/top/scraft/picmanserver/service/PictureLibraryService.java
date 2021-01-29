@@ -2,8 +2,11 @@ package top.scraft.picmanserver.service;
 
 import top.scraft.picmanserver.dao.Picture;
 import top.scraft.picmanserver.dao.PictureLibrary;
+import top.scraft.picmanserver.data.PictureDetails;
 import top.scraft.picmanserver.data.PictureLibraryFullException;
 import top.scraft.picmanserver.data.UpdatePictureRequest;
+
+import java.util.List;
 
 public interface PictureLibraryService {
 
@@ -46,5 +49,12 @@ public interface PictureLibraryService {
      * @param request 图片信息
      */
     Picture addOrUpdatePicture(long lid, String pid, UpdatePictureRequest request, Long operator) throws PictureLibraryFullException;
+
+    /**
+     * 在所有图库中搜索图片
+     * @param keyword 搜索关键字
+     * @return
+     */
+    List<PictureDetails> searchForRgw(String keyword);
 
 }

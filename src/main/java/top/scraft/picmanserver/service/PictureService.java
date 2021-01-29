@@ -10,7 +10,11 @@ import java.io.IOException;
 public interface PictureService {
 
     @Nullable
+    @Deprecated
     PictureDetails getDetails(String pid);
+
+    @Nullable
+    PictureDetails getDetails(String pid, long lid);
 
     boolean isInLibrary(String pid, long lid);
 

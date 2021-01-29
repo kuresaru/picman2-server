@@ -33,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean canCreateLib(Long said) {
+        if (said == null || said < 1) {
+            return false;
+        }
         User user = userDao.findById(said).orElseThrow(() -> new IllegalArgumentException("User not found: " + said));
         return pictureLibraryDao.countByUsers_SaidAndDeletedFalse(user.getSaid()) < user.getMaxLibCount();
     }
