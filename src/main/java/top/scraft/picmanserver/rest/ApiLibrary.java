@@ -107,6 +107,10 @@ public class ApiLibrary {
         if (principal.getSaid() != SacUserPrincipal.SAID_RGW) {
             return Result.forbidden();
         }
+        search = search.trim();
+        if (search.length() == 0) {
+            return Result.badRequest("关键字不能为空");
+        }
         return Result.ok(pictureLibraryService.searchForRgw(search));
     }
 
