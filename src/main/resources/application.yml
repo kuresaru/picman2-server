@@ -10,7 +10,6 @@ server:
     session:
       cookie:
         name: PMST
-    timeout: P30DT0H0M0S
 
 spring:
   application:
@@ -28,6 +27,10 @@ spring:
   servlet:
     multipart:
       max-file-size: 30MB
+  redis:
+    database: 2
+    host: 127.0.0.1
+    port: 6379
 
 security:
   oauth2:
@@ -38,11 +41,6 @@ security:
       user-authorization-uri: http://10.11.7.3:7011/oauth/authorize  # change sac public address
     resource:
       user-info-uri: http://localhost:7011/api/userinfo  # change sac private address
-
-logging:
-  path: logs
-  file:
-    max-history: 30
 
 picman:
   storage:
