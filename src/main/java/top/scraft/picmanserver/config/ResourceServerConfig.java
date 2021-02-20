@@ -14,6 +14,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import top.scraft.picmanserver.data.LoginFinishSavedRequest;
 import top.scraft.picmanserver.data.SacUserPrincipal;
 import top.scraft.picmanserver.security.MyAuthenticationEntryPoint;
 import top.scraft.picmanserver.security.RgwAuthenticationFilter;
@@ -51,7 +52,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring()
                 .antMatchers("/webjars/**", "/favicon.ico")
                 .antMatchers(
@@ -64,9 +65,10 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    @SuppressWarnings("unchecked")
     public PrincipalExtractor principalExtractor() {
         return map -> {
-            Map pm = (Map) map.get("principal");
+            Map<String, Object> pm = (Map<String, Object>) map.get("principal");
             SacUserPrincipal principal = new SacUserPrincipal();
             principal.setSaid(Long.parseLong(pm.get("said").toString()));
             principal.setUsername((String) pm.get("username"));
@@ -75,14 +77,20 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
+    /**
+     * 修改保存的登录前请求 登录后固定跳转到<tt>/?login_finish</tt>
+     */
     @Bean
     public Filter myLoginSuccessRedirectSetterFilter() {
         final AntPathRequestMatcher requestMatcher = new AntPathRequestMatcher("/login");
         final RequestCache requestCache = new HttpSessionRequestCache();
+        final LoginFinishSavedRequest loginFinishSavedRequest = new LoginFinishSavedRequest();
         return (request, response, chain) -> {
             HttpServletRequest r = (HttpServletRequest) request;
             if (requestMatcher.matches(r)) {
                 requestCache.removeRequest((HttpServletRequest) request, null);
+                ((HttpServletRequest) request).getSession()
+                        .setAttribute("SPRING_SECURITY_SAVED_REQUEST", loginFinishSavedRequest);
             }
             chain.doFilter(request, response);
         };

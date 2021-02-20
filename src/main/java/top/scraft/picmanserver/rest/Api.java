@@ -25,8 +25,8 @@ public class Api {
     public ResponseEntity<Result<ServerInfo>>
     getServerInfo() {
         ServerInfo serverInfo = new ServerInfo();
-        serverInfo.setApiVersion(1);
-        serverInfo.setApiSubVersion(2);
+        serverInfo.setApiVersion(2);
+        serverInfo.setApiSubVersion(0);
         return Result.ok(serverInfo);
     }
 
