@@ -17,8 +17,13 @@ public class PictureDetails {
     private long createTime;
     private long lastModify;
     private boolean valid;
+    private long accessLibrary;
 
     public static PictureDetails fromPicture(Picture p) {
+        return fromPicture(p, -1);
+    }
+
+    public static PictureDetails fromPicture(Picture p, long accessLibrary) {
         PictureDetails d = new PictureDetails();
         d.setPid(p.getPid());
         d.setDescription(p.getDescription());
@@ -29,6 +34,7 @@ public class PictureDetails {
         d.setCreateTime(p.getCreateTime());
         d.setLastModify(p.getLastModify());
         d.setValid(p.isValid());
+        d.setAccessLibrary(accessLibrary);
         return d;
     }
 

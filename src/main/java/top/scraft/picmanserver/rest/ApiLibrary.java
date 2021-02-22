@@ -99,19 +99,21 @@ public class ApiLibrary {
     }
 
     @ApiLog
-    @ApiOperation("搜索图片(测试功能,限内部调用)")
-    @GetMapping("/_search")
+    @ApiOperation("搜索图片")
+    @GetMapping({"/finder", "/_search"}) // _search为了兼容旧的测试 以后删
     public ResponseEntity<Result<List<PictureDetails>>>
     searchPicture(@ApiIgnore @AuthenticationPrincipal SacUserPrincipal principal,
                   @ApiParam @RequestParam String search) {
-        if (principal.getSaid() != SacUserPrincipal.SAID_RGW) {
-            return Result.forbidden();
-        }
         search = search.trim();
         if (search.length() == 0) {
             return Result.badRequest("关键字不能为空");
         }
-        return Result.ok(pictureLibraryService.searchForRgw(search));
+        long said = principal.getSaid();
+        if (said == SacUserPrincipal.SAID_RGW) {
+            return Result.ok(pictureLibraryService.searchForRgw(search));
+        } else {
+            return Result.ok(pictureLibraryService.searchForUser(search, said));
+        }
     }
 
     @ApiLog
@@ -139,9 +141,9 @@ public class ApiLibrary {
     @PutMapping("/{lid}/gallery/{pid}")
     public ResponseEntity<Result<PictureDetails>>
     updatePictureMeta(@ApiIgnore @AuthenticationPrincipal SacUserPrincipal principal,
-                  @ApiParam @PathVariable long lid,
-                  @ApiParam @PathVariable String pid,
-                  @ApiParam @RequestBody UpdatePictureRequest updatePictureRequest) {
+                      @ApiParam @PathVariable long lid,
+                      @ApiParam @PathVariable String pid,
+                      @ApiParam @RequestBody UpdatePictureRequest updatePictureRequest) {
         // 检查图库权限
         if (!pictureLibraryService.access(lid, principal.getSaid())) {
             return ResponseEntity.notFound().build();
@@ -235,9 +237,9 @@ public class ApiLibrary {
     @GetMapping("/{lid}/gallery/{pid}/thumb")
     public ResponseEntity<FileSystemResource>
     getThumbFile(@ApiIgnore @AuthenticationPrincipal SacUserPrincipal principal,
-                   @ApiIgnore WebRequest request,
-                   @ApiParam @PathVariable long lid,
-                   @ApiParam @PathVariable String pid) {
+                 @ApiIgnore WebRequest request,
+                 @ApiParam @PathVariable long lid,
+                 @ApiParam @PathVariable String pid) {
         PictureDetails details = pictureService.getDetails(pid);
         if ((details == null) || (!details.isValid()) || (!pictureService.isInLibrary(pid, lid))) {
             return ResponseEntity.notFound().build();

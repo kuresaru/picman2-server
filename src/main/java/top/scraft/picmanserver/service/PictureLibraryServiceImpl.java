@@ -8,10 +8,7 @@ import top.scraft.picmanserver.data.UpdatePictureRequest;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PictureLibraryServiceImpl implements PictureLibraryService {
@@ -22,6 +19,8 @@ public class PictureLibraryServiceImpl implements PictureLibraryService {
     private PictureLibraryDao pictureLibraryDao;
     @Resource
     private PictureDao pictureDao;
+    @Resource
+    private PicmanDao picmanDao;
 
     @Override
     public boolean exists(long lid) {
@@ -110,4 +109,16 @@ public class PictureLibraryServiceImpl implements PictureLibraryService {
         return details;
     }
 
+    @Override
+    public List<PictureDetails> searchForUser(String keyword, long said) {
+        ArrayList<Long> lids = new ArrayList<>();
+        pictureLibraryDao.findByUsers_SaidAndDeletedFalse(said).forEach(l -> lids.add(l.getLid()));
+        List<Picture> pictures = pictureDao.findByValidTrueAndDescriptionOrTagsContainingAndLidIn(keyword, lids);
+        List<String> pids = new ArrayList<>();
+        pictures.forEach(p -> pids.add(p.getPid()));
+        Map<String, Long> accessLibrary = picmanDao.getPictureAccessLibrary(pids);
+        List<PictureDetails> details = new ArrayList<>();
+        pictures.forEach(p -> details.add(PictureDetails.fromPicture(p, accessLibrary.getOrDefault(p.getPid(), -1L))));
+        return details;
+    }
 }

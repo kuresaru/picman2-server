@@ -57,4 +57,6 @@ public interface PictureLibraryService {
      */
     List<PictureDetails> searchForRgw(String keyword);
 
+    List<PictureDetails> searchForUser(String keyword, long said);
+
 }
