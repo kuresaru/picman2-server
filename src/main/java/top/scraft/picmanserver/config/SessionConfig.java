@@ -13,7 +13,7 @@ public class SessionConfig implements DefaultCookieSerializerCustomizer {
 
     @Override
     public void customize(DefaultCookieSerializer serializer) {
-        serializer.setUseBase64Encoding(false);
+        serializer.setUseBase64Encoding(true);
         serializer.setCookieMaxAge(COOKIE_AGE);
     }
 
