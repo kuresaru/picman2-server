@@ -18,11 +18,11 @@ public interface PictureDao extends JpaRepository<Picture, String> {
 
     List<Picture> findByLibraries_Lid(Long lid);
 
-    @Query(nativeQuery = true, value = "select p.* from picture as p left join picture_tag_map as t on p.pid = t.picture " +
+    @Query(nativeQuery = true, value = "select distinct p.* from picture as p left join picture_tag_map as t on p.pid = t.picture " +
             "where valid = true and (p.description like %?1% or t.tags like %?1%)")
     List<Picture> findByValidTrueAndDescriptionOrTagsContaining(String keyword);
 
-    @Query(nativeQuery = true, value = "select p.* from picture as p " +
+    @Query(nativeQuery = true, value = "select distinct p.* from picture as p " +
             "left join picture_tag_map as t on p.pid = t.picture " +
             "left join piclib_pictures_map as l on p.pid = l.pid " +
             "where valid = true and (p.description like %?1% or t.tags like %?1%) and l.lid in ?2 " +
